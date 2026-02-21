@@ -1,6 +1,7 @@
 import os
 from instagrapi import Client
 from openai import OpenAI
+import time
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME")
@@ -10,14 +11,30 @@ def login_instagram():
     print("📱 Instagram'a giriş yapılıyor...")
     
     try:
-        cl = Client()
+        # User agent değiştir ve cookie kullan
+        cl = Client(
+            use_alternative_instagram_agent=True,
+            use_cookie=True
+        )
+        
+        time.sleep(1)
         cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
         print(f"✅ Giriş başarılı! {INSTAGRAM_USERNAME}")
         return cl
     
     except Exception as e:
         print(f"❌ Giriş hatası: {e}")
-        return None
+        print("\n🔄 İkinci deneme yapılıyor...")
+        
+        try:
+            time.sleep(3)
+            cl = Client()
+            cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+            print(f"✅ Giriş başarılı! {INSTAGRAM_USERNAME}")
+            return cl
+        except Exception as e2:
+            print(f"❌ İkinci deneme de başarısız: {e2}")
+            return None
 
 def get_my_posts(cl):
     print("\n📸 Senin post'ların çekiliyor...")
