@@ -10,7 +10,7 @@ def login_instagram():
     print("📱 Instagram'a giriş yapılıyor...")
     
     try:
-        cl = Client()
+        cl = Client(proxy=None)
         cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
         print(f"✅ Giriş başarılı! {INSTAGRAM_USERNAME}")
         return cl
