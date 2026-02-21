@@ -1,0 +1,28 @@
+name: Instagram AI Bot
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Python kur
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Kütüphaneleri yükle
+      run: pip install -r requirements.txt
+    
+    - name: Bot'u çalıştır
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
+        INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
+      run: python main.py
