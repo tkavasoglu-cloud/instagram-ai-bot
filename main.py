@@ -10,7 +10,7 @@ def login_instagram():
     print("📱 Instagram'a giriş yapılıyor...")
     
     try:
-        cl = Client(proxy=None)
+        cl = Client()
         cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
         print(f"✅ Giriş başarılı! {INSTAGRAM_USERNAME}")
         return cl
@@ -107,46 +107,51 @@ SADECE CAPTION'LAR!"""
         
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            max_tokens=2000,
+            max_tokens=1000,
             messages=[{"role": "user", "content": prompt}]
         )
         
         captions = response.choices[0].message.content
-        print(f"\n✅ Caption'lar olusturuldu!\n{captions}")
+        print(f"\n✅ Caption'lar olusturuldu!")
+        print(captions)
         return captions
     
     except Exception as e:
         print(f"❌ Hata: {e}")
         return None
 
-if __name__ == "__main__":
+def main():
     print("=" * 70)
     print("🚀 SENIN INSTAGRAM ANALIZI - GITHUB ACTIONS")
     print("=" * 70)
     
+    # Giriş
     cl = login_instagram()
-    
     if not cl:
         print("\n❌ Giriş basarısız!")
-        exit()
+        return
     
+    # Post'ları çek
     posts = get_my_posts(cl)
-    
     if not posts:
         print("\n❌ Post çekme basarısız!")
-        exit()
+        return
     
+    # Analiz yap
     analysis = analyze_my_style(posts)
-    
     if not analysis:
         print("\n❌ Analiz basarısız!")
-        exit()
+        return
     
+    # Caption'lar oluştur
     captions = create_similar_captions(analysis)
+    if not captions:
+        print("\n❌ Caption olusturma basarısız!")
+        return
     
     print("\n" + "=" * 70)
-    print("✅ TÜMÜ TAMAMLANDI!")
+    print("✅ TAMAMLANDI!")
     print("=" * 70)
-    
-    print(f"\n📊 ANALIZ:\n{analysis}")
-    print(f"\n📝 CAPTION'LAR:\n{captions}")
+
+if __name__ == "__main__":
+    main()
