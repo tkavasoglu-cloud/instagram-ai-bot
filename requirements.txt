@@ -1,0 +1,4 @@
+instagrapi
+openai
+pillow
+requests
